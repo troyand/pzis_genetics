@@ -7,12 +7,17 @@
         <script type="text/javascript" src="js/ui.core.js"></script>
         <script type="text/javascript" src="js/ui.tabs.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
+        <style type="text/css">
+            ul#icons {margin: 0; padding: 0;}
+            ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+            ul#icons span.ui-icon {float: left; margin: 0 4px;}
+        </style>
     </head>
     <body> 
         <div id="tabs">
             <ul>
-                <li><a href="#results"><span>Результати</span></a></li>
-                <li><a href="#options"><span>Параметри</span></a></li>
+                <li><a href="#results"><span>Results</span></a></li>
+                <li><a href="#options"><span>Options</span></a></li>
             </ul>
             <div id="results">
                 <h3>Results</h3>
@@ -20,6 +25,11 @@
                 <canvas id="graph-canvas" width="640" height="480">
                     No canvas support in your browser
                 </canvas>
+                <ul id="icons" class="ui-widget ui-helper-clearfix">
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-play"><span class="ui-icon ui-icon-play"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pause"><span class="ui-icon ui-icon-pause"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-stop"><span class="ui-icon ui-icon-stop"></span></li>
+                </ul>
             </div>
             <div id="options">
                 <h3>Options</h3>
@@ -86,6 +96,13 @@
                     </select>
                 </div>
 
+                <div id="update-interval-chooser"> 
+                    <form id="update-interval-chooser-selector">
+                        Update interval:
+                        <input type="text" id="update-interval" value="40" size=3 />
+                        ms
+                    </form>
+                </div>
             </div> 
         </div>
     </body>
