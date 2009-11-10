@@ -7,8 +7,11 @@
         <script type="text/javascript" src="js/ui.core.js"></script>
         <script type="text/javascript" src="js/ui.tabs.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
+<<<<<<< HEAD:index.html
         <script type="text/javascript" src="js/func.js"></script>
         <script type="text/javascript" src="js/genetics.js"></script>
+=======
+>>>>>>> 92f4076906a5289562531091a98440a30746afcc:index.html
         <style type="text/css">
             ul#icons {margin: 0; padding: 0;}
             ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
@@ -63,7 +66,7 @@
                 <div id="population-size-chooser"> 
                     <form id="population-size-chooser-selector">
                         Population size:
-                        <input type="text" id="population-size" value="100" />
+                        <input type="text" id="population-size" value="1000" />
                     </form>
                 </div>
                 <div id="parent-replacement-chooser"> 
@@ -76,8 +79,8 @@
                 <div id="selection-chooser">
                     Selection type: 
                     <select id="selection-chooser-selector">
-                        <option value="1">Roulette</option>
-                        <option value="2">Tournament</option>
+                        <option value="roulette">Roulette</option>
+                        <option value="tournament">Tournament</option>
                     </select>
                 </div>
                 <div id="crossing-over-chooser"> 
@@ -97,8 +100,8 @@
                 <div id="stop-criterion-chooser">
                     Stop criterion: 
                     <select id="stop-criterion-chooser-selector">
-                        <option value="1">Number of iterations</option>
-                        <option value="2">Precision</option>
+                        <option value="iterations">Number of iterations</option>
+                        <option value="precision">Precision</option>
                     </select>
                 </div>
 
@@ -109,6 +112,12 @@
                         ms
                     </form>
                 </div>
+				<p>
+				<div id="reset-save-load-buttons">
+				<button type="button">Reset</button>
+				<button type="button">Save my options</button>
+				<button type="button">Load my options</button>
+				</div>
             </div> 
         </div>
     </body>
