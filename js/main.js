@@ -13,6 +13,7 @@ var updateInterval;
 var renderIntervalID = null;
 
 $(document).ready(function(){
+        funcs.test();
         $("#tabs").tabs();
         $('#tabs').bind('tabsselect', function(event, ui) {
                 if(ui.index==0){
@@ -22,6 +23,9 @@ $(document).ready(function(){
             });
         updateOptions();
         renderOptions();
+
+        initGA();
+
         initCanvas();
         
         $(".ui-icon-stop").click(function() {

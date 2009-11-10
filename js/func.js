@@ -33,5 +33,5 @@ funcs.schwefel = function(x){
 
 funcs.test = function(){
     var y = funcs.sin([1]);
-    console.log(funcs.schwefel([1,1,1,1,1,1,1,1,1,1]));
+    //console.log(funcs.schwefel([1,1,1,1,1,1,1,1,1,1]));
 }
