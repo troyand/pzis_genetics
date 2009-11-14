@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .field {
+                clear:both;
+                text-align:right;
+                line-height:25px;
+            }
+
+            label {
+                float:left;
+                padding-right:10px;
+            }
+            .main {
+                float:left
+            }
+        </style>
+        <script src="json2.js"></script>
+        <script type="text/javascript" src="../js/jquery-1.3.2.js"></script>
+        <script>
+            function object(o) {
+                function F() {}
+                F.prototype = o;
+                return new F();
+            }
+
+            function camel2human(str) {
+                //camel name to spaced starting from capital
+                //e.g. camelCasedName -> Camel cased name
+
+                var regex = /([A-Z])/g;//match capital
+                str = str.replace(regex, " $1");//add a space before capitals
+                str = str[0].toUpperCase() + str.slice(1).toLowerCase();//capitalize the first and lowercase the rest
+                return str;
+            }
+
+            var properties = {};
+            properties.min = 1;
+            properties.max = 5;
+            properties.key = "val";
+            properties.f = ["a", "b", "c"];
+            jsonObject = JSON.stringify(properties);
+            console.log(jsonObject);
+            properties = JSON.parse(jsonObject);
+            console.log(properties);
+            var p2 = object(properties);
+            p2.max = 100;
+            console.log(p2);
+            console.log(properties);
+
+            //all possible parameter values
+            var parameters = {
+                maximumType: ["local", "global"],
+                encoding: ["gray", "exponential"],
+                populationSize: "number",
+                parentReplacementRate: "number",
+                selectionType: ["roulette", "tournament"],
+                crossingOverProbability: "number",
+                mutationProbability: "number"
+            };
+            console.log(parameters);
+            //actual values to be used with specific function
+            var vals = {
+                maximumType: "global",
+                encoding: "exponential",
+                populationSize: 125,
+                parentReplacementRate: 80,
+                selectionType: "tournament",
+                crossingOverProbability: 90,
+                mutationProbability: 5
+            };
+
+            var functions = {
+                sin: {
+                    properties: object(vals)
+                },
+                cos: {
+                    properties: object(vals)
+                }
+            }
+            functions.sin.properties.crossingOverProbability = 80;
+            functions.cos.properties.mutationProbability = 10;
+            console.log(functions);
+            var activeFunction = {};
+            activeFunction.update = function(newName) {
+                activeFunction.name = newName;
+                activeFunction.properties = functions[activeFunction.name].properties;
+                for(var v in activeFunction.properties){
+                    $("#"+v).val(activeFunction.properties[v]);
+                }
+            }
+
+            $(document).ready(function(){
+
+                var formHTML = "";
+                formHTML = "<form id='functionsForm'>";
+                formHTML += "<label for='functions'>Function</label>";
+                formHTML += "<select id='functions'>";
+                for(var f in functions){
+                    formHTML += "<option value='" + f + "'>" + f + "</option>";
+                }
+                formHTML += "</select></form>";
+                $("#fs").append(formHTML);
+                
+                $("#functions").change(function () {
+                    activeFunction.update( this.value );
+                });
+
+                console.log(activeFunction);
+                
+                for(var parameterKey in parameters){
+                    var parameterValue = parameters[parameterKey];
+                    formHTML = "";
+                    if(parameterValue instanceof Array){
+                        //open label and select tag
+                        formHTML+="<label for='" + parameterKey + "'>" + camel2human(parameterKey) + "</label>";
+                        formHTML+="<select id='" + parameterKey + "'>";
+                        for(var index in parameterValue){
+                            //add option
+                            var parameterOption = parameterValue[index];
+                            formHTML+="<option value='" + parameterOption + "'>" + parameterOption + "</option>";
+                        }
+                        //close select tag
+                        formHTML+="</select><br />";
+                        } else{
+                        if (parameterValue==="number") {
+                            //add label and input tag
+                            formHTML+="<label for='" + parameterKey + "'>" + camel2human(parameterKey) + "</label>";
+                            formHTML+="<input id='" + parameterKey + "' /><br />";
+                        }
+                    }
+                    $("#options").append(formHTML);
+                    $("#"+parameterKey).change(function (pk) {
+                        return function() {
+                            activeFunction.properties[pk] = this.value;
+                            console.log(pk);
+                        }
+                    }(parameterKey));
+                }
+
+                //set option in select by value
+                //$("#maximumType").val('global');
+
+
+                /*for(var v in vals){
+                    $("#"+v).val(vals[v]);
+                }
+                console.log(JSON.stringify(vals));*/
+
+                activeFunction.update( $("#functions").val() );
+
+
+                $("#options").append("<input id='inp'>");
+                $("#inp").change(function () {
+                    console.log(this.value);
+                    var jsonVals = JSON.parse(this.value);
+                    for(var v in jsonVals){
+                        $("#"+v).val(jsonVals[v]);
+                    }
+                });
+
+                $("#options").append("<select id='sel'><option value='a'>A</option><option value='b'>B</value></select>");
+                $("#sel").change(function () {
+                    console.log(this.value);
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <div class="main">
+            <div class="field">
+                <div id="fs"></div>
+                <form id="options"></form>
+            </div>
+        </div>
+    </body>
+</html>
+
