@@ -25,29 +25,26 @@
                 return new F();
             }
 
-            function camel2human(str) {
+            String.prototype.camel2human = function () {
                 //camel name to spaced starting from capital
                 //e.g. camelCasedName -> Camel cased name
 
                 var regex = /([A-Z])/g;//match capital
-                str = str.replace(regex, " $1");//add a space before capitals
+                var str = this.replace(regex, " $1");//add a space before capitals
                 str = str[0].toUpperCase() + str.slice(1).toLowerCase();//capitalize the first and lowercase the rest
                 return str;
             }
 
-            var properties = {};
-            properties.min = 1;
-            properties.max = 5;
-            properties.key = "val";
-            properties.f = ["a", "b", "c"];
-            jsonObject = JSON.stringify(properties);
-            console.log(jsonObject);
-            properties = JSON.parse(jsonObject);
-            console.log(properties);
-            var p2 = object(properties);
-            p2.max = 100;
-            console.log(p2);
-            console.log(properties);
+            if(!console){
+                var console = {
+                    log: function() {
+                        return;
+                    }
+                }
+            }
+            
+            //jsonObject = JSON.stringify(properties);
+            //properties = JSON.parse(jsonObject);
 
             //all possible parameter values
             var parameters = {
@@ -73,19 +70,25 @@
 
             var functions = {
                 sin: {
-                    properties: object(vals)
+                    properties: object(vals)//prototypally inherit from default vals
                 },
                 cos: {
                     properties: object(vals)
                 }
             }
+            //tweek the specific properties to suit the function
             functions.sin.properties.crossingOverProbability = 80;
             functions.cos.properties.mutationProbability = 10;
             console.log(functions);
-            var activeFunction = {};
+            var activeFunction = {
+                name: null, //string containing the name
+                properties: null //reference to corresponding properties
+            };
             activeFunction.update = function(newName) {
                 activeFunction.name = newName;
+                //searching in the functions object for needed properties and keepeng reference to them
                 activeFunction.properties = functions[activeFunction.name].properties;
+                //re-render options with the values of new function
                 for(var v in activeFunction.properties){
                     $("#"+v).val(activeFunction.properties[v]);
                 }
@@ -93,7 +96,9 @@
 
             $(document).ready(function(){
 
-                var formHTML = "";
+                var formHTML = "";//a variable for bulk aggregation of html text to provide for $("#id").append(formHTML)
+
+                //first render the dropdown box for functions list
                 formHTML = "<form id='functionsForm'>";
                 formHTML += "<label for='functions'>Function</label>";
                 formHTML += "<select id='functions'>";
@@ -103,18 +108,23 @@
                 formHTML += "</select></form>";
                 $("#fs").append(formHTML);
                 
+                //when user changes the function in the dropdown box we must change the values in the properties
+                //corresponding to the function chosen
                 $("#functions").change(function () {
-                    activeFunction.update( this.value );
+                    activeFunction.update( this.value() );
                 });
 
                 console.log(activeFunction);
                 
                 for(var parameterKey in parameters){
                     var parameterValue = parameters[parameterKey];
+                    //clear the innerHTML aggreagtor
                     formHTML = "";
+
+                    //the label is needed for both dropdown box and input
+                    formHTML+="<label for='" + parameterKey + "'>" + parameterKey.camel2human() + "</label>";
                     if(parameterValue instanceof Array){
                         //open label and select tag
-                        formHTML+="<label for='" + parameterKey + "'>" + camel2human(parameterKey) + "</label>";
                         formHTML+="<select id='" + parameterKey + "'>";
                         for(var index in parameterValue){
                             //add option
@@ -126,7 +136,7 @@
                         } else{
                         if (parameterValue==="number") {
                             //add label and input tag
-                            formHTML+="<label for='" + parameterKey + "'>" + camel2human(parameterKey) + "</label>";
+                            formHTML+="<label for='" + parameterKey + "'>" + parameterKey.camel2human() + "</label>";
                             formHTML+="<input id='" + parameterKey + "' /><br />";
                         }
                     }
@@ -148,22 +158,11 @@
                 }
                 console.log(JSON.stringify(vals));*/
 
+                //since the properties' fields are still empty, though some function is chosen
+                //we must manually fire the update method
                 activeFunction.update( $("#functions").val() );
 
 
-                $("#options").append("<input id='inp'>");
-                $("#inp").change(function () {
-                    console.log(this.value);
-                    var jsonVals = JSON.parse(this.value);
-                    for(var v in jsonVals){
-                        $("#"+v).val(jsonVals[v]);
-                    }
-                });
-
-                $("#options").append("<select id='sel'><option value='a'>A</option><option value='b'>B</value></select>");
-                $("#sel").change(function () {
-                    console.log(this.value);
-                });
 
             });
         </script>
