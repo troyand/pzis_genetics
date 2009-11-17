@@ -1,0 +1,44 @@
+.field {
+    clear:both;
+    text-align:right;
+    line-height:25px;
+}
+
+label {
+    float:left;
+    padding-right:10px;
+}
+label.error {
+    float: right;
+    position: absolute;
+    padding-left:10px;
+}
+.main {
+    float:left
+}
+input {
+    width: 100px;
+    border: 1px solid black;
+}
+input.error {
+    border: 1px solid red;
+}
+select {
+    width: 140px
+}
+ul#icons {
+    margin: 0;
+    padding: 0;
+}
+ul#icons li {
+    margin: 2px;
+    position: relative;
+    padding: 4px 0;
+    cursor: pointer;
+    float: left;
+    list-style: none;
+}
+ul#icons span.ui-icon {
+    float: left;
+    margin: 0 4px;
+}
