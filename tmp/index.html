@@ -12,12 +12,28 @@
                 float:left;
                 padding-right:10px;
             }
+            label.error {
+                float: right;
+                position: absolute;
+                padding-left:10px;
+            }
             .main {
                 float:left
+            }
+            input {
+                width: 100px;
+                border: 1px solid black;
+            }
+            input.error {
+                border: 1px solid red;
+            }
+            option {
+                width: 120px
             }
         </style>
         <script src="json2.js"></script>
         <script type="text/javascript" src="../js/jquery-1.3.2.js"></script>
+        <script type="text/javascript" src="../js/jquery.validate.js"></script>
         <script>
             function object(o) {
                 function F() {}
@@ -50,11 +66,27 @@
             var parameters = {
                 maximumType: ["local", "global"],
                 encoding: ["gray", "exponential"],
-                populationSize: "number",
-                parentReplacementRate: "number",
+                populationSize: {
+                    required: true,
+                    number: true,
+                    range: [2, 1000]
+                },
+                parentReplacementRate: {
+                    required: true,
+                    number: true,
+                    range: [0, 100]
+                },
                 selectionType: ["roulette", "tournament"],
-                crossingOverProbability: "number",
-                mutationProbability: "number"
+                crossingOverProbability: {
+                    required: true,
+                    number: true,
+                    range: [0, 100]
+                },
+                mutationProbability: {
+                    required: true,
+                    number: true,
+                    range: [0, 100]
+                }
             };
             console.log(parameters);
             //actual values to be used with specific function
@@ -111,11 +143,13 @@
                 //when user changes the function in the dropdown box we must change the values in the properties
                 //corresponding to the function chosen
                 $("#functions").change(function () {
-                    activeFunction.update( this.value() );
+                    activeFunction.update( this.value );
                 });
 
                 console.log(activeFunction);
                 
+                var validationRules = {};
+
                 for(var parameterKey in parameters){
                     var parameterValue = parameters[parameterKey];
                     //clear the innerHTML aggreagtor
@@ -134,9 +168,11 @@
                         //close select tag
                         formHTML+="</select><br />";
                         } else{
-                        if (parameterValue==="number") {
+                        if (parameterValue instanceof Object) {
                             //add label and input tag
-                            formHTML+="<input id='" + parameterKey + "' /><br />";
+                            formHTML+="<input id='" + parameterKey + "' name='" + parameterKey + "' /><br />";
+                            //remember validation rules for input
+                            validationRules[parameterKey] = parameterValue;
                         }
                     }
                     $("#options").append(formHTML);
@@ -147,6 +183,8 @@
                         }
                     }(parameterKey));
                 }
+
+                //apply the validation rules
 
                 //set option in select by value
                 //$("#maximumType").val('global');
@@ -161,6 +199,10 @@
                 //we must manually fire the update method
                 activeFunction.update( $("#functions").val() );
 
+
+                $("#options").validate({
+                    rules: validationRules
+                });
 
 
             });
