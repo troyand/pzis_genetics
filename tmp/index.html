@@ -27,8 +27,8 @@
             input.error {
                 border: 1px solid red;
             }
-            option {
-                width: 120px
+            select {
+                width: 140px
             }
         </style>
         <script src="json2.js"></script>
@@ -69,6 +69,7 @@
                 populationSize: {
                     required: true,
                     number: true,
+                    digits: true,
                     range: [2, 1000]
                 },
                 parentReplacementRate: {
@@ -124,6 +125,7 @@
                 for(var v in activeFunction.properties){
                     $("#"+v).val(activeFunction.properties[v]);
                 }
+                $("#options").validate().form();
             }
 
             $(document).ready(function(){
@@ -178,14 +180,19 @@
                     $("#options").append(formHTML);
                     $("#"+parameterKey).change(function (pk) {
                         return function() {
-                            activeFunction.properties[pk] = this.value;
+                            //change the value in properies only if it is valid
+                            if($("#options").validate().element("#"+pk)){
+                                activeFunction.properties[pk] = this.value;
+                            }
                             console.log(pk);
                         }
                     }(parameterKey));
                 }
 
                 //apply the validation rules
-
+                $("#options").validate({
+                    rules: validationRules
+                });
                 //set option in select by value
                 //$("#maximumType").val('global');
 
@@ -200,9 +207,6 @@
                 activeFunction.update( $("#functions").val() );
 
 
-                $("#options").validate({
-                    rules: validationRules
-                });
 
 
             });
