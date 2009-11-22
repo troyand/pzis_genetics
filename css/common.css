@@ -1,7 +1,10 @@
+.clear {
+    clear: both;
+}
 .field {
     clear:both;
     text-align:right;
-    line-height:25px;
+    line-height:35px;
 }
 
 label {
@@ -14,7 +17,7 @@ label.error {
     padding-left:10px;
 }
 .main {
-    float:left
+    float:left;
 }
 input {
     width: 100px;

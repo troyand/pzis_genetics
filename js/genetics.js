@@ -5,7 +5,7 @@ function initGA(){
     GA.minvalue = 1;
     GA.maxvalue = 1000;
     var length = Math.ceil(Math.log(GA.maxvalue)/Math.LN2);
-    console.log(length);
+    //console.log(length);
     for(var i=0; i<populationSize; i++){
         var random = Math.random();
         var chromasomeDecimalValue = Math.round(GA.minvalue + (GA.maxvalue - GA.minvalue)*random);
@@ -14,6 +14,6 @@ function initGA(){
             chromasomeBinValue = "0" + chromasomeBinValue;
         }
         GA.chromasomes[i] = chromasomeBinValue;
-        console.log(chromasomeDecimalValue + ": " + chromasomeBinValue);
+        //console.log(chromasomeDecimalValue + ": " + chromasomeBinValue);
     }
 }

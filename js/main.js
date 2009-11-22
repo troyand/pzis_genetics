@@ -7,6 +7,47 @@ PGA.time = 0;//time counter; each step gets incremented by 1
 PGA.updateInterval = 40;//25 fps
 PGA.renderIntervalID = null;
 
+$(document).ready(function(){
+    console.log(PGA);
+    PGA.initFunctions();
+    PGA.renderFunctionOptions();
+
+    $("#tabs").tabs();
+    $('#tabs').bind('tabsselect', function(event, ui) {
+        if(ui.index==0){
+        //updateOptions();
+        }
+        });
+
+    //initPGA();
+
+    PGA.initCanvas();
+
+    $(".ui-icon-stop").click(function() {
+        PGA.time = 0;
+        clearInterval(PGA.renderIntervalID);
+        PGA.renderIntervalID = null;
+        });
+
+    $(".ui-icon-pause").click(function() {
+        clearInterval(PGA.renderIntervalID);
+        PGA.renderIntervalID = null;
+        });
+
+    $(".ui-icon-play").click(function() {
+            if(PGA.time == 0){
+                PGA.initCanvas();
+            }
+            else{
+                if(PGA.renderIntervalID == null){
+                    PGA.renderIntervalID = setInterval("PGA.canvasRenderLoop()", PGA.updateInterval);
+                }
+            }
+        });
+    });
+
+
+
 PGA.initCanvas = function(){
     var canvas = document.getElementById("graph-canvas");
     if (canvas.getContext) {
@@ -58,41 +99,155 @@ PGA.canvasRenderLoop = function(){
     //alert(Math.abs(fRender(time)-fRender(time+2)));
     PGA.time += 1;
 }
-$(document).ready(function(){
-    console.log(PGA);
-    $("#tabs").tabs();
-    $('#tabs').bind('tabsselect', function(event, ui) {
-        if(ui.index==0){
-        //updateOptions();
+
+PGA.initFunctions = function(){
+    PGA.parameters = {
+        maximumType: ["local", "global"],
+        encoding: ["binary", "gray", "exponential"],
+        populationSize: {
+            required: true,
+            number: true,
+            digits: true,
+            range: [2, 1000]
+        },
+        parentReplacementRate: {
+            required: true,
+            number: true,
+            range: [0, 100]
+        },
+        selectionType: ["roulette", "tournament"],
+        crossingOverProbability: {
+            required: true,
+            number: true,
+            range: [0, 100]
+        },
+        mutationProbability: {
+            required: true,
+            number: true,
+            range: [0, 100]
         }
-        });
+    };
+    PGA.defVals = {
+        maximumType: "global",
+        encoding: "exponential",
+        allowedEncodings: ["binary", "exponential"],
+        populationSize: 125,
+        parentReplacementRate: 80,
+        selectionType: "tournament",
+        crossingOverProbability: 90,
+        mutationProbability: 5
+    };
 
-    //initPGA();
+    PGA.functions = {
+        sin: {
+            properties: object(PGA.defVals)//prototypally inherit from default vals
+        },
+        cos: {
+            properties: object(PGA.defVals)
+        }
+    }
+    //tweek the specific properties to suit the function
+    PGA.functions.sin.properties.crossingOverProbability = 80;
+    PGA.functions.cos.properties.mutationProbability = 10;
+    PGA.functions.cos.properties.allowedEncodings = ["gray", "exponential"];
+    PGA.activeFunction = {
+        name: null, //string containing the name
+        properties: null //reference to corresponding properties
+    };
+    PGA.activeFunction.update = function(newName) {
+        PGA.activeFunction.name = newName;
+        //searching in the functions object for needed properties and keepeng reference to them
+        PGA.activeFunction.properties = PGA.functions[PGA.activeFunction.name].properties;
+        //add limitation of possible encodings
+        $("#encoding > *").attr("disabled","disabled");
+        for(var enc in PGA.activeFunction.properties.allowedEncodings){
+            $("#encoding > [value=" + PGA.activeFunction.properties.allowedEncodings[enc] + "]").removeAttr("disabled");
+        }
+        //re-render options with the values of new function
+        for(var v in PGA.activeFunction.properties){
+            $("#"+v).val(PGA.activeFunction.properties[v]);
+        }
+        $("#optionsForm").validate().form();
+    }
 
-    PGA.initCanvas();
 
-    $(".ui-icon-stop").click(function() {
-        PGA.time = 0;
-        clearInterval(PGA.renderIntervalID);
-        PGA.renderIntervalID = null;
-        });
+}
 
-    $(".ui-icon-pause").click(function() {
-        clearInterval(PGA.renderIntervalID);
-        PGA.renderIntervalID = null;
-        });
+PGA.renderFunctionOptions = function(){
 
-    $(".ui-icon-play").click(function() {
-            if(PGA.time == 0){
-                PGA.initCanvas();
-            }
-            else{
-                if(PGA.renderIntervalID == null){
-                    PGA.renderIntervalID = setInterval("PGA.canvasRenderLoop()", PGA.updateInterval);
-                }
-            }
-        });
+    var formHTML = "";//a variable for bulk aggregation of html text to provide for $("#id").append(formHTML)
+
+    //first render the dropdown box for functions list
+    formHTML = "<form id='functionsForm'>";
+    formHTML += "<label for='functions'>Function</label>";
+    formHTML += "<select id='functions'>";
+    for(var f in PGA.functions){
+        formHTML += "<option value='" + f + "'>" + f + "</option>";
+    }
+    formHTML += "</select></form>";
+    $("#fs").append(formHTML);
+    
+    //when user changes the function in the dropdown box we must change the values in the properties
+    //corresponding to the function chosen
+    $("#functions").change(function () {
+        PGA.activeFunction.update( this.value );
     });
 
+    
+    var validationRules = {};
+
+    for(var parameterKey in PGA.parameters){
+        var parameterValue = PGA.parameters[parameterKey];
+        //clear the innerHTML aggreagtor
+        formHTML = "";
+
+        //the label is needed for both dropdown box and input
+        formHTML+="<label for='" + parameterKey + "'>" + parameterKey.camel2human() + "</label>";
+        if(parameterValue instanceof Array){
+            //open label and select tag
+            formHTML+="<select id='" + parameterKey + "'>";
+            for(var index in parameterValue){
+                //add option
+                var parameterOption = parameterValue[index];
+                formHTML+="<option value='" + parameterOption + "'>" + parameterOption + "</option>";
+            }
+            //close select tag
+            formHTML+="</select><br />";
+            } else{
+            if (parameterValue instanceof Object) {
+                //add label and input tag
+                formHTML+="<input id='" + parameterKey + "' name='" + parameterKey + "' /><br />";
+                //remember validation rules for input
+                validationRules[parameterKey] = parameterValue;
+            }
+        }
+        console.log($("#optionsForm"));
+        $("#optionsForm").append(formHTML);
+        $("#"+parameterKey).change(function (pk) {
+            return function() {
+                //change the value in properies only if it is valid
+                if($("#optionsForm").validate().element("#"+pk)){
+                    PGA.activeFunction.properties[pk] = this.value;
+                }
+            }
+        }(parameterKey));
+    }
+
+    //apply the validation rules
+    $("#optionsForm").validate({
+        rules: validationRules
+    });
+    //set option in select by value
+    //$("#maximumType").val('global');
 
 
+    /*for(var v in vals){
+        $("#"+v).val(vals[v]);
+    }
+    console.log(JSON.stringify(vals));*/
+
+    //since the properties' fields are still empty, though some function is chosen
+    //we must manually fire the update method
+    PGA.activeFunction.update( $("#functions").val() );
+
+}

@@ -65,7 +65,7 @@
             //all possible parameter values
             var parameters = {
                 maximumType: ["local", "global"],
-                encoding: ["gray", "exponential"],
+                encoding: ["binary", "gray", "exponential"],
                 populationSize: {
                     required: true,
                     number: true,
@@ -94,6 +94,7 @@
             var vals = {
                 maximumType: "global",
                 encoding: "exponential",
+                allowedEncodings: ["binary", "exponential"],
                 populationSize: 125,
                 parentReplacementRate: 80,
                 selectionType: "tournament",
@@ -112,6 +113,7 @@
             //tweek the specific properties to suit the function
             functions.sin.properties.crossingOverProbability = 80;
             functions.cos.properties.mutationProbability = 10;
+            functions.cos.properties.allowedEncodings = ["gray", "exponential"];
             console.log(functions);
             var activeFunction = {
                 name: null, //string containing the name
@@ -121,6 +123,11 @@
                 activeFunction.name = newName;
                 //searching in the functions object for needed properties and keepeng reference to them
                 activeFunction.properties = functions[activeFunction.name].properties;
+                //add limitation of possible encodings
+                $("#encoding > *").attr("disabled","disabled");
+                for(var enc in activeFunction.properties.allowedEncodings){
+                    console.log($("#encoding > [value=" + activeFunction.properties.allowedEncodings[enc] + "]").removeAttr("disabled"));
+                }
                 //re-render options with the values of new function
                 for(var v in activeFunction.properties){
                     $("#"+v).val(activeFunction.properties[v]);
@@ -205,6 +212,8 @@
                 //since the properties' fields are still empty, though some function is chosen
                 //we must manually fire the update method
                 activeFunction.update( $("#functions").val() );
+
+                console.log($("#encoding > [value=gray]").attr("disabled","disabled"));
 
 
 
