@@ -103,7 +103,8 @@ PGA.canvasRenderLoop = function(){
 PGA.initFunctions = function(){
     PGA.parameters = {
         maximumType: ["local", "global"],
-        encoding: ["binary", "gray", "exponential"],
+        encoding: ["binary", "exponential"],
+        gray: ["enabled", "disabled"],
         populationSize: {
             required: true,
             number: true,
@@ -116,6 +117,7 @@ PGA.initFunctions = function(){
             range: [0, 100]
         },
         selectionType: ["roulette", "tournament"],
+        elitarism: ["enabled", "disabled"],
         crossingOverProbability: {
             required: true,
             number: true,
@@ -130,10 +132,12 @@ PGA.initFunctions = function(){
     PGA.defVals = {
         maximumType: "global",
         encoding: "exponential",
+        gray: "disabled",
         allowedEncodings: ["binary", "exponential"],
         populationSize: 125,
         parentReplacementRate: 80,
         selectionType: "tournament",
+        elitarism: "disabled",
         crossingOverProbability: 90,
         mutationProbability: 5
     };
@@ -149,7 +153,7 @@ PGA.initFunctions = function(){
     //tweek the specific properties to suit the function
     PGA.functions.sin.properties.crossingOverProbability = 80;
     PGA.functions.cos.properties.mutationProbability = 10;
-    PGA.functions.cos.properties.allowedEncodings = ["gray", "exponential"];
+    PGA.functions.cos.properties.allowedEncodings = ["exponential"];
     PGA.activeFunction = {
         name: null, //string containing the name
         properties: null //reference to corresponding properties
@@ -221,7 +225,6 @@ PGA.renderFunctionOptions = function(){
                 validationRules[parameterKey] = parameterValue;
             }
         }
-        console.log($("#optionsForm"));
         $("#optionsForm").append(formHTML);
         $("#"+parameterKey).change(function (pk) {
             return function() {
