@@ -8,7 +8,6 @@ PGA.updateInterval = 40;//25 fps
 PGA.renderIntervalID = null;
 
 $(document).ready(function(){
-    console.log(PGA);
     PGA.initFunctions();
     PGA.renderFunctionOptions();
 
@@ -21,7 +20,7 @@ $(document).ready(function(){
 
     //initPGA();
 
-    PGA.initCanvas();
+    //PGA.initCanvas();
 
     $(".ui-icon-stop").click(function() {
         PGA.time = 0;
@@ -44,6 +43,19 @@ $(document).ready(function(){
                 }
             }
         });
+    $("#saveButton").click(function(){
+            console.log("saving");
+            var optionsWindow = window.open("", "Parameters", "width=600,height=600");
+            var html = '<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>Save</title></head><body><pre id="json">';
+            //make a deep copy of an object, otherwise only own properties will be serialized (no pure inherited)
+            //http://stackoverflow.com/questions/122102/what-is-the-most-efficent-way-to-clone-a-javascript-object
+            html += JSON.stringify(jQuery.extend(true, {}, PGA.functions), null, '\t');
+            //html += PGA.activeFunction.properties.toSource();
+            html += '</pre></body></html>';
+            optionsWindow.document.open();
+            optionsWindow.document.write(html);
+            optionsWindow.document.close();
+            });
     });
 
 
@@ -53,11 +65,6 @@ PGA.initCanvas = function(){
     if (canvas.getContext) {
         canvasContext = canvas.getContext("2d");
 
-        canvasContext.fillStyle = "rgb(200,0,0)";
-        canvasContext.fillRect (10, 10, 55, 50);
-
-        canvasContext.fillStyle = "rgba(0, 0, 200, 0.5)";
-        canvasContext.fillRect (30, 30, 55, 50);
 
         canvasContext.fillStyle = "rgb(200,200,200)";
         canvasContext.fillRect(0, 0, 640, 480);
