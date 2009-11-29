@@ -10,6 +10,8 @@ PGA.renderIntervalID = null;
 $(document).ready(function(){
     PGA.initFunctions();
     PGA.renderFunctionOptions();
+    PGA.A.encoding();
+    PGA.A.init();
 
     $("#tabs").tabs();
     $('#tabs').bind('tabsselect', function(event, ui) {
@@ -56,6 +58,7 @@ $(document).ready(function(){
             optionsWindow.document.write(html);
             optionsWindow.document.close();
             });
+    //console.log(PGA.toSource());
     });
 
 
