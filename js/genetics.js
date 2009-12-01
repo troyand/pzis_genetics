@@ -58,6 +58,7 @@ PGA.A.encoding = function() {
 
 PGA.A.init = function() {
     PGA.A.chromosomes = [];
+    PGA.A.children = [];
     for(var i=0; i<PGA.activeFunction.properties.populationSize; i++){
         var ch = '';
         for(var j=0; j<PGA.A.chLength; j++){
@@ -76,8 +77,50 @@ PGA.A.selection = function() {
 }
 
 PGA.A.recombination = function() {
+	//forms pairs and invokes crossover for them and returns children
+	function form_pairs(prob, pool){
+		var child = [];//temporary
+		pool=pool.shuffle();
+//		console.log(pool);
+		for (var i=0;i<pool.length-1; i+=2)
+		{
+			if (Math.random()<prob){//crossover with probability prob
+				child=crossover(pool[i], pool[i+1]);
+			}
+			else{//no crossover
+				child[0]=pool[i];
+				child[1]=pool[i+1];
+			}
+			PGA.A.children[i]=child[0];
+			PGA.A.children[i+1]=child[1];
+
+		}
+		return PGA.A.children;
+	}
+	console.log(form_pairs(0.8,PGA.A.chromosomes));
+	
+	function crossover(f1,f2){
+		var Length=PGA.A.chLength
+		var point1 = Math.ceil(Math.random()*(Length-1)); //converting from (0;1) to (1,.., Length-1) 
+		var point2 = Math.ceil(Math.random()*(Length-1));
+		if(point1===point2){
+			while (point1===point2){
+				point2 = Math.ceil(Math.random()*Length-1);
+			}
+		}
+		if(point1>point2){
+			var t=point2;
+			point2=point1;
+			point1=t;
+		}
+		var result = [];
+		result[0]=f1.substring(0,point1)+f2.substring(point1,point2)+f1.substring(point2);
+		result[1]=f2.substring(0,point1)+f1.substring(point1,point2)+f2.substring(point2);
+		return result;
+	}
 }
 /*
+	}
 var GA = new Object();
 
 function initGA(){

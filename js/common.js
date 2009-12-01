@@ -24,3 +24,9 @@ String.prototype.camel2human = function () {
     str = str[0].toUpperCase() + str.slice(1).toLowerCase();//capitalize the first and lowercase the rest
     return str;
 }
+
+Array.prototype.shuffle = function() {
+	var ar=this;
+for(var j, x, i = ar.length; i; j = parseInt(Math.random() * i), x = ar[--i], ar[i] = ar[j], ar[j] = x);
+    return ar;
+} 
