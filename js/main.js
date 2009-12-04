@@ -223,9 +223,11 @@ PGA.renderFunctionOptions = function(){
             //open label and select tag
             formHTML+="<select id='" + parameterKey + "'>";
             for(var index in parameterValue){
-                //add option
-                var parameterOption = parameterValue[index];
-                formHTML+="<option value='" + parameterOption + "'>" + parameterOption + "</option>";
+                if(parameterValue.hasOwnProperty(index)){
+                    //add option
+                    var parameterOption = parameterValue[index];
+                    formHTML+="<option value='" + parameterOption + "'>" + parameterOption + "</option>";
+                }
             }
             //close select tag
             formHTML+="</select><br />";
