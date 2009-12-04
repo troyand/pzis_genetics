@@ -13,6 +13,7 @@ $(document).ready(function(){
     PGA.A.encoding();
     PGA.A.init();
     PGA.A.recombination();
+    
 
     $("#tabs").tabs();
     $('#tabs').bind('tabsselect', function(event, ui) {

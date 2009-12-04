@@ -58,7 +58,6 @@ PGA.A.encoding = function() {
 
 PGA.A.init = function() {
     PGA.A.chromosomes = [];
-    PGA.A.children = [];
     for(var i=0; i<PGA.activeFunction.properties.populationSize; i++){
         var ch = '';
         for(var j=0; j<PGA.A.chLength; j++){
@@ -77,8 +76,10 @@ PGA.A.selection = function() {
 }
 
 PGA.A.recombination = function() {
+	
 	//forms pairs and invokes crossover for them and returns children
 	function form_pairs(prob, pool){
+		PGA.A.children = [];
 		var child = [];//temporary
 		var n=pool.length;
 		pool=pool.shuffle();
@@ -103,6 +104,8 @@ PGA.A.recombination = function() {
 		return PGA.A.children;
 	}
 	console.log(form_pairs(0.8,PGA.A.chromosomes));
+	console.log(mutation(0.1, PGA.A.children));
+	//console.log(PGA.A.children);
 	
 	function crossover(f1,f2){
 		var Length=PGA.A.chLength
@@ -122,6 +125,26 @@ PGA.A.recombination = function() {
 		result[0]=f1.substring(0,point1)+f2.substring(point1,point2)+f1.substring(point2);
 		result[1]=f2.substring(0,point1)+f1.substring(point1,point2)+f2.substring(point2);
 		return result;
+	}
+	function mutation (prob, children)
+	{
+		//var count=0;
+		for (var i=0; i<children.length; i++){
+			r=Math.random();
+			if (r<prob){
+				var point=Math.floor(Math.random()*(PGA.A.chLength-1));
+				if (children[i].charAt(point)==="0"){
+					children[i]=children[i].substring(0,point)+"1"+children[i].substring(point+1);
+				}
+				else {
+					children[i]=children[i].substring(0,point)+"0"+children[i].substring(point+1);
+				}
+			//	count++;
+			}	
+		}
+		PGA.A.children=children;
+		return children;
+		//return count;
 	}
 }
 /*
