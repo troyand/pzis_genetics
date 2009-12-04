@@ -80,9 +80,10 @@ PGA.A.recombination = function() {
 	//forms pairs and invokes crossover for them and returns children
 	function form_pairs(prob, pool){
 		var child = [];//temporary
+		var n=pool.length;
 		pool=pool.shuffle();
 //		console.log(pool);
-		for (var i=0;i<pool.length-1; i+=2)
+		for (var i=0;i<n-1; i+=2)
 		{
 			if (Math.random()<prob){//crossover with probability prob
 				child=crossover(pool[i], pool[i+1]);
@@ -94,6 +95,10 @@ PGA.A.recombination = function() {
 			PGA.A.children[i]=child[0];
 			PGA.A.children[i+1]=child[1];
 
+		}
+		if (n%2==1)
+		{
+			PGA.A.children[n-1]=pool[n-1];
 		}
 		return PGA.A.children;
 	}
