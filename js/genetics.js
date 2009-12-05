@@ -3,8 +3,16 @@ PGA.A = {} //algorithm object
 PGA.A.encoding = function() {
     //length of the chromosome
     //TODO should be calculated dynamically
-    PGA.A.chLength = 16; 
-    console.log(PGA.activeFunction.properties.encoding);
+    PGA.A.chLength = 6; 
+    if(PGA.activeFunction.properties.encoding==='logarithmic'){
+        PGA.A.toNum = log2num;
+        PGA.A.toCh = num2log;
+    }
+
+    if(PGA.activeFunction.properties.encoding==='binary'){
+        PGA.A.toNum = bin2num;
+        PGA.A.toCh = num2bin;
+    }
     console.log(num2log(log2num("0011")));
     console.log(fixedBin(31,PGA.A.chLength));
     //binary fixed-length string (chopped/zero-padded)
@@ -69,10 +77,47 @@ PGA.A.init = function() {
         }
         PGA.A.chromosomes[i]=ch;
     }
+    PGA.A.f = function(arg){
+        return 1+Math.sin(arg[0]*0.1);
+    }
     //console.log(PGA.A.chromosomes,PGA.activeFunction.properties.populationSize);
 }
 
 PGA.A.selection = function() {
+    var sum = 0;//sum of function values to normalize probabilities arrray
+    var pSum = 0;
+    var prob = [];
+    for(var i=0; i < PGA.A.chromosomes.length; i++){
+        prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+        sum += prob[i];
+        console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+    }
+    for(var i=0; i < PGA.A.chromosomes.length; i++){
+        prob[i] /= sum;
+        pSum += prob[i];
+        prob[i] = pSum;
+    }
+    var pool = [];
+    for(var i=0; i < PGA.A.chromosomes.length; i++){
+        var rand = Math.random();
+        var found = false;
+        for(var j=0; (j < PGA.A.chromosomes.length) && !found; j++){
+            if(rand < prob[j]){
+                pool[i] = PGA.A.chromosomes[j];
+                found = true;
+            }
+        }
+    }
+    console.log(prob);
+    console.log('sum before', sum);
+    PGA.A.chromosomes = pool;
+    sum = 0;
+    for(var i=0; i < PGA.A.chromosomes.length; i++){
+        prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+        sum += prob[i];
+        console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+    }
+    console.log('sum after', sum);
 }
 
 PGA.A.recombination = function() {
@@ -103,12 +148,14 @@ PGA.A.recombination = function() {
 		}
 		return PGA.A.children;
 	}
-	console.log(form_pairs(0.8,PGA.A.chromosomes));
-	console.log(mutation(0.1, PGA.A.children));
+    console.log('B', PGA.A.chromosomes);
+	console.log('P', form_pairs(0.8,PGA.A.chromosomes));
+	console.log('M', mutation(0.4, PGA.A.children));
 	//console.log(PGA.A.children);
 	
 	function crossover(f1,f2){
-		var Length=PGA.A.chLength
+        //two-point crossingover
+		var Length=PGA.A.chLength;
 		var point1 = Math.ceil(Math.random()*(Length-1)); //converting from (0;1) to (1,.., Length-1) 
 		var point2 = Math.ceil(Math.random()*(Length-1));
 		if(point1===point2){

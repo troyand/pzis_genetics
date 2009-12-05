@@ -12,6 +12,7 @@ $(document).ready(function(){
     PGA.renderFunctionOptions();
     PGA.A.encoding();
     PGA.A.init();
+    PGA.A.selection();
     PGA.A.recombination();
     
 
@@ -115,7 +116,7 @@ PGA.canvasRenderLoop = function(){
 PGA.initFunctions = function(){
     PGA.parameters = {
         maximumType: ["local", "global"],
-        encoding: ["binary", "exponential"],
+        encoding: ["binary", "logarithmic"],
         gray: ["enabled", "disabled"],
         populationSize: {
             required: true,
@@ -143,10 +144,10 @@ PGA.initFunctions = function(){
     };
     PGA.defVals = {
         maximumType: "global",
-        encoding: "exponential",
+        encoding: "binary",
         gray: "disabled",
-        allowedEncodings: ["binary", "exponential"],
-        populationSize: 125,
+        allowedEncodings: ["binary", "logarithmic"],
+        populationSize: 8,
         parentReplacementRate: 80,
         selectionType: "tournament",
         elitarism: "disabled",
@@ -165,7 +166,7 @@ PGA.initFunctions = function(){
     //tweek the specific properties to suit the function
     PGA.functions.sin.properties.crossingOverProbability = 80;
     PGA.functions.cos.properties.mutationProbability = 10;
-    PGA.functions.cos.properties.allowedEncodings = ["exponential"];
+    PGA.functions.cos.properties.allowedEncodings = ["logarithmic"];
     PGA.activeFunction = {
         name: null, //string containing the name
         properties: null //reference to corresponding properties
