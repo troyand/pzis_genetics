@@ -12,8 +12,10 @@ $(document).ready(function(){
     PGA.renderFunctionOptions();
     PGA.A.encoding();
     PGA.A.init();
-    PGA.A.selection();
-    PGA.A.recombination();
+    for(var k=0; k<25; k++){
+        PGA.A.selection();
+        PGA.A.recombination();
+    }
     
 
     $("#tabs").tabs();
@@ -130,7 +132,11 @@ PGA.initFunctions = function(){
             range: [0, 100]
         },
         selectionType: ["roulette", "tournament"],
-        elitarism: ["enabled", "disabled"],
+        elitarism: {
+            required: true,
+            number: true,
+            range: [0, 100]
+        },
         crossingOverProbability: {
             required: true,
             number: true,
@@ -140,19 +146,25 @@ PGA.initFunctions = function(){
             required: true,
             number: true,
             range: [0, 100]
-        }
+        },
+        stopCriterion: {
+            required: true,
+            number: true,
+            range: [0, 100]
+        },
     };
     PGA.defVals = {
         maximumType: "global",
         encoding: "binary",
         gray: "disabled",
         allowedEncodings: ["binary", "logarithmic"],
-        populationSize: 8,
+        populationSize: 24,
         parentReplacementRate: 80,
         selectionType: "tournament",
-        elitarism: "disabled",
-        crossingOverProbability: 90,
-        mutationProbability: 5
+        elitarism: 0,
+        crossingOverProbability: 98,
+        mutationProbability: 20,
+        stopCriterion: 10
     };
 
     PGA.functions = {

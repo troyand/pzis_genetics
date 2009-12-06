@@ -3,7 +3,7 @@ PGA.A = {} //algorithm object
 PGA.A.encoding = function() {
     //length of the chromosome
     //TODO should be calculated dynamically
-    PGA.A.chLength = 6; 
+    PGA.A.chLength = 8; 
     if(PGA.activeFunction.properties.encoding==='logarithmic'){
         PGA.A.toNum = log2num;
         PGA.A.toCh = num2log;
@@ -78,7 +78,7 @@ PGA.A.init = function() {
         PGA.A.chromosomes[i]=ch;
     }
     PGA.A.f = function(arg){
-        return 1+Math.sin(arg[0]*0.1);
+        return 1+Math.sin(arg[0]*0.05);
     }
     //console.log(PGA.A.chromosomes,PGA.activeFunction.properties.populationSize);
 }
@@ -90,7 +90,7 @@ PGA.A.selection = function() {
     for(var i=0; i < PGA.A.chromosomes.length; i++){
         prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
         sum += prob[i];
-        console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+        //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
     }
     for(var i=0; i < PGA.A.chromosomes.length; i++){
         prob[i] /= sum;
@@ -108,23 +108,25 @@ PGA.A.selection = function() {
             }
         }
     }
-    console.log(prob);
-    console.log('sum before', sum);
+    //console.log(prob);
+    //console.log('sum before', sum);
     PGA.A.chromosomes = pool;
     sum = 0;
     for(var i=0; i < PGA.A.chromosomes.length; i++){
         prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
         sum += prob[i];
-        console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+        //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
     }
     console.log('sum after', sum);
 }
 
 PGA.A.recombination = function() {
+    PGA.A.chromosomes = form_pairs(PGA.activeFunction.properties.crossingOverProbability/100, PGA.A.chromosomes);
+    PGA.A.chromosomes = mutation(PGA.activeFunction.properties.mutationProbability/100, PGA.A.chromosomes);
 	
 	//forms pairs and invokes crossover for them and returns children
 	function form_pairs(prob, pool){
-		PGA.A.children = [];
+		var children = [];
 		var child = [];//temporary
 		var n=pool.length;
 		pool=pool.shuffle();
@@ -138,19 +140,19 @@ PGA.A.recombination = function() {
 				child[0]=pool[i];
 				child[1]=pool[i+1];
 			}
-			PGA.A.children[i]=child[0];
-			PGA.A.children[i+1]=child[1];
+			children[i]=child[0];
+			children[i+1]=child[1];
 
 		}
 		if (n%2==1)
 		{
-			PGA.A.children[n-1]=pool[n-1];
+			children[n-1]=pool[n-1];
 		}
-		return PGA.A.children;
+		return children;
 	}
-    console.log('B', PGA.A.chromosomes);
-	console.log('P', form_pairs(0.8,PGA.A.chromosomes));
-	console.log('M', mutation(0.4, PGA.A.children));
+    //console.log('B', PGA.A.chromosomes);
+	//console.log('P', form_pairs(0.8,PGA.A.chromosomes));
+	//console.log('M', mutation(0.4, PGA.A.children));
 	//console.log(PGA.A.children);
 	
 	function crossover(f1,f2){
@@ -189,7 +191,7 @@ PGA.A.recombination = function() {
 			//	count++;
 			}	
 		}
-		PGA.A.children=children;
+		//PGA.A.children=children;
 		return children;
 		//return count;
 	}
