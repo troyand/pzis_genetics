@@ -118,7 +118,29 @@ PGA.A.selection = function() {
         //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
     }
     console.log('sum after', sum);
-}
+    function tournament(participantsNumber, quantity){
+    	var pool = [];
+    	for (var i=0; i<quantity; i++){ //form the needed quantity of chromosomes in the pool
+    		var winner=-1;
+    		var winnerHealth=-1;
+    		//console.log("next round");
+    		//var sssss=Math.sin(157.5);
+    		for (var j=0; j<participantsNumber; j++){ //form participants of the tournament and asses them
+    			var randChrom=Math.floor(Math.random()*PGA.A.chromosomes.length);
+    			var z=PGA.A.toNum(PGA.A.chromosomes[randChrom]);
+    			var currHealth=PGA.A.f(z);
+    			if (currHealth>winnerHealth){
+    				winner=randChrom;
+    				winnerHealth=currHealth;
+    			}
+    		}
+    		pool[i]=PGA.A.chromosomes[winner];
+    		//console.log(pool[i]);
+    	}
+    	return pool;
+    }
+    console.log(tournament(2,10));
+   }
 
 PGA.A.recombination = function() {
     PGA.A.chromosomes = form_pairs(PGA.activeFunction.properties.crossingOverProbability/100, PGA.A.chromosomes);
@@ -177,23 +199,21 @@ PGA.A.recombination = function() {
 	}
 	function mutation (prob, children)
 	{
-		//var count=0;
+		var alphabet=[0,1];
 		for (var i=0; i<children.length; i++){
 			r=Math.random();
 			if (r<prob){
 				var point=Math.floor(Math.random()*(PGA.A.chLength-1));
-				if (children[i].charAt(point)==="0"){
-					children[i]=children[i].substring(0,point)+"1"+children[i].substring(point+1);
+				for (var j=0; j<alphabet.length; j++){
+					if (children[i].charAt(point)===alphabet[j]){
+						var k=(j+point)%(alphabet.length-1);
+						children[i]=children[i].substring(0,point)+alphabet[k]+children[i].substring(point+1);
+						break;
+					}
 				}
-				else {
-					children[i]=children[i].substring(0,point)+"0"+children[i].substring(point+1);
-				}
-			//	count++;
 			}	
 		}
-		//PGA.A.children=children;
 		return children;
-		//return count;
 	}
 }
 /*
