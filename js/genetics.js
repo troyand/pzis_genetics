@@ -128,7 +128,7 @@ PGA.A.selection = function() {
     		for (var j=0; j<participantsNumber; j++){ //form participants of the tournament and asses them
     			var randChrom=Math.floor(Math.random()*PGA.A.chromosomes.length);
     			var z=PGA.A.toNum(PGA.A.chromosomes[randChrom]);
-    			var currHealth=PGA.A.f(z);
+    			var currHealth=PGA.A.f([z]);
     			if (currHealth>winnerHealth){
     				winner=randChrom;
     				winnerHealth=currHealth;
