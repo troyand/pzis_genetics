@@ -50,18 +50,39 @@ $(document).ready(function(){
                 }
             }
         });
+    $("#resetButton").click(function(){
+            console.log("resetting");
+            $("#functions").remove();
+            PGA.functions = null;
+            PGA.functions = jQuery.extend(true, {}, PGA.defFunctions);
+            PGA.renderFunctionOptions();
+            });
     $("#saveButton").click(function(){
             console.log("saving");
-            var optionsWindow = window.open("", "Parameters", "width=600,height=600");
-            var html = '<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>Save</title></head><body><pre id="json">';
+            //var optionsWindow = window.open("", "Parameters", "width=600,height=600");
+            var html = '<pre id="json">';
             //make a deep copy of an object, otherwise only own properties will be serialized (no pure inherited)
             //http://stackoverflow.com/questions/122102/what-is-the-most-efficent-way-to-clone-a-javascript-object
             html += JSON.stringify(jQuery.extend(true, {}, PGA.functions), null, '\t');
             //html += PGA.activeFunction.properties.toSource();
-            html += '</pre></body></html>';
-            optionsWindow.document.open();
-            optionsWindow.document.write(html);
-            optionsWindow.document.close();
+            html += '</pre>';
+            //optionsWindow.document.open();
+            //optionsWindow.document.write(html);
+            //optionsWindow.document.close();
+            $("#TB_ajaxContent").html(html);
+            });
+
+    $("#loadButton").click(function(){
+            var html = "<textarea id='jsonTextarea'></textarea><input type='button' id='loadJSON' value='Load'>";
+            $("#TB_ajaxContent").html(html);
+            $("#loadJSON").click(function(){
+                console.log("loading");
+                $("#functions").remove();
+                PGA.functions = null;
+                PGA.functions = JSON.parse($("#jsonTextarea").val());
+                PGA.renderFunctionOptions();
+                tb_remove();
+                });
             });
     //console.log(PGA.toSource());
     });
@@ -167,7 +188,7 @@ PGA.initFunctions = function(){
         stopCriterion: 10
     };
 
-    PGA.functions = {
+    PGA.defFunctions = {
         sin: {
             properties: object(PGA.defVals)//prototypally inherit from default vals
         },
@@ -176,9 +197,10 @@ PGA.initFunctions = function(){
         }
     }
     //tweek the specific properties to suit the function
-    PGA.functions.sin.properties.crossingOverProbability = 80;
-    PGA.functions.cos.properties.mutationProbability = 10;
-    PGA.functions.cos.properties.allowedEncodings = ["logarithmic"];
+    PGA.defFunctions.sin.properties.crossingOverProbability = 80;
+    PGA.defFunctions.cos.properties.mutationProbability = 10;
+    PGA.defFunctions.cos.properties.allowedEncodings = ["logarithmic"];
+    PGA.functions = jQuery.extend(true, {}, PGA.defFunctions);
     PGA.activeFunction = {
         name: null, //string containing the name
         properties: null //reference to corresponding properties
@@ -214,13 +236,14 @@ PGA.renderFunctionOptions = function(){
         formHTML += "<option value='" + f + "'>" + f + "</option>";
     }
     formHTML += "</select></form>";
-    $("#fs").append(formHTML);
+    $("#fs").html(formHTML);
     
     //when user changes the function in the dropdown box we must change the values in the properties
     //corresponding to the function chosen
     $("#functions").change(function () {
         PGA.activeFunction.update( this.value );
     });
+    $("#optionsForm").html("");
 
     
     var validationRules = {};

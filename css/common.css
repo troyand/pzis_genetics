@@ -1,6 +1,13 @@
 .clear {
     clear: both;
 }
+.invisible {
+    display: none;
+}
+#jsonTextarea {
+    width: 100%;
+    height: 90%;
+}
 .field {
     clear:both;
     text-align:right;
