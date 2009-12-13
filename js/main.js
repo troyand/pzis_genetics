@@ -35,6 +35,20 @@ $(document).ready(function(){
         //PGA.initCanvas();
 
         $(".ui-icon-stop").click(function() {
+            tb_show("Results","#TB_inline?height=500&width=700");
+            var html = "";
+            html += "<h3>"+PGA.activeFunction.name+"</h3>";
+            html += "<hr>";
+            html += "Function value - " + PGA.A.g(PGA.A.chromosomes[0]) + "<br>Argument value - (" + PGA.A.h(PGA.A.chromosomes[0])+")<br>";
+            html += "<hr>";
+            html += "Generations count - " + PGA.time + "<br>";
+            html += "Time taken - " + PGA.time*PGA.updateInterval/1000 + "<br>";
+            html += "<hr>";
+            html += "<b>Options</b><br>";
+            for(var v in PGA.activeFunction.properties){
+                html += v.camel2human() + " - " + PGA.activeFunction.properties[v] + "<br>";
+            }
+            $("#TB_ajaxContent").html(html);
             PGA.time = 0;
             clearInterval(PGA.renderIntervalID);
             PGA.renderIntervalID = null;
