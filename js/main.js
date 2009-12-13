@@ -196,6 +196,10 @@ PGA.initFunctions = function(){
     };
 
     PGA.defFunctions = {
+        hyp: {
+            properties: object(PGA.defVals),
+            argNum: 2
+        },
         sin: {
             properties: object(PGA.defVals),//prototypally inherit from default vals
             argNum: 1

@@ -1,10 +1,14 @@
 PGA.funcs = {};
 PGA.funcs.sin = function(x){
-    return Math.sin(x[0]);
+    return 1+Math.sin(x[0]);
 }
 
 PGA.funcs.cos = function(x){
-    return Math.cos(x[0]);
+    return 1+Math.cos(x[0]);
+}
+
+PGA.funcs.hyp = function(x){
+    return x[0]*x[0]+x[1]*x[1];
 }
 
 PGA.funcs.griewank = function(x){

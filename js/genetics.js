@@ -2,9 +2,7 @@ PGA.A = {} //algorithm object
 
 PGA.A.encoding = function() {
     //length of the chromosome
-    //TODO should be calculated dynamically
     PGA.A.chLength = PGA.activeFunction.properties.bitsPerNumber*PGA.activeFunction.argNum;
-    console.log(PGA.activeFunction.properties.bitsPerNumber,PGA.activeFunction.argNum);
     if(PGA.activeFunction.properties.encoding==='logarithmic'){
         PGA.A.toNum = log2num;
         PGA.A.toCh = num2log;
@@ -78,15 +76,23 @@ PGA.A.init = function() {
         }
         PGA.A.chromosomes[i]=ch;
     }
-    PGA.A.f = function(arg){
-        return 1+Math.sin(arg[0]*0.05);
+    //PGA.A.f = function(arg){
+    //    return 1+Math.sin(arg[0]*0.05);
+    //}
+    PGA.A.f = PGA.funcs[PGA.activeFunction.name];
+    PGA.A.g = function(ch){
+        var arg = [];
+        for(var k=0; k<PGA.activeFunction.argNum; k++){
+            arg[k] = PGA.A.toNum(ch.slice(k*PGA.activeFunction.properties.bitsPerNumber,(k+1)*PGA.activeFunction.properties.bitsPerNumber));
+        }
+        return PGA.A.f(arg);
     }
     //console.log(PGA.A.chromosomes,PGA.activeFunction.properties.populationSize);
 }
 
 PGA.A.selection = function() {
     roulette(PGA.A.chromosomes.length);
-    console.log(elitarism(PGA.activeFunction.properties.elitarism/100));
+    //console.log(elitarism(PGA.activeFunction.properties.elitarism/100));
     function elitarism(percent){
         var pool =[];
         //code goes here
@@ -100,7 +106,8 @@ PGA.A.selection = function() {
         var pSum = 0;
         var prob = [];
         for(var i=0; i < PGA.A.chromosomes.length; i++){
-            prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+            //prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+            prob[i] = PGA.A.g(PGA.A.chromosomes[i]);
             sum += prob[i];
             //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
         }
@@ -125,7 +132,8 @@ PGA.A.selection = function() {
         PGA.A.chromosomes = pool;
         sum = 0;
         for(var i=0; i < PGA.A.chromosomes.length; i++){
-            prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+            //prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+            prob[i] = PGA.A.g(PGA.A.chromosomes[i]);
             sum += prob[i];
             //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
         }
