@@ -23,23 +23,26 @@ $(document).ready(function(){
     $("#tabs").tabs();
     $('#tabs').bind('tabsselect', function(event, ui) {
         if(ui.index==0){
-        //updateOptions();
-        }
-        });
+            PGA.time = 0;
+            clearInterval(PGA.renderIntervalID);
+            PGA.renderIntervalID = null;
+            //updateOptions();
+            }
+            });
 
-    //initPGA();
+        //initPGA();
 
-    //PGA.initCanvas();
+        //PGA.initCanvas();
 
-    $(".ui-icon-stop").click(function() {
-        PGA.time = 0;
-        clearInterval(PGA.renderIntervalID);
-        PGA.renderIntervalID = null;
-        });
+        $(".ui-icon-stop").click(function() {
+            PGA.time = 0;
+            clearInterval(PGA.renderIntervalID);
+            PGA.renderIntervalID = null;
+            });
 
-    $(".ui-icon-pause").click(function() {
-        clearInterval(PGA.renderIntervalID);
-        PGA.renderIntervalID = null;
+        $(".ui-icon-pause").click(function() {
+            clearInterval(PGA.renderIntervalID);
+            PGA.renderIntervalID = null;
         });
 
     $(".ui-icon-play").click(function() {
