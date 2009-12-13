@@ -147,16 +147,22 @@ PGA.initFunctions = function(){
             digits: true,
             range: [2, 1000]
         },
+        bitsPerNumber: {
+            required: true,
+            number: true,
+            digits: true,
+            range: [4, 32]
+        },
         parentReplacementRate: {
             required: true,
             number: true,
-            range: [0, 100]
+            range: [50, 100]
         },
         selectionType: ["roulette", "tournament"],
         elitarism: {
             required: true,
             number: true,
-            range: [0, 100]
+            range: [0, 50]
         },
         crossingOverProbability: {
             required: true,
@@ -180,6 +186,7 @@ PGA.initFunctions = function(){
         gray: "disabled",
         allowedEncodings: ["binary", "logarithmic"],
         populationSize: 24,
+        bitsPerNumber: 8,
         parentReplacementRate: 80,
         selectionType: "tournament",
         elitarism: 0,
@@ -190,10 +197,12 @@ PGA.initFunctions = function(){
 
     PGA.defFunctions = {
         sin: {
-            properties: object(PGA.defVals)//prototypally inherit from default vals
+            properties: object(PGA.defVals),//prototypally inherit from default vals
+            argNum: 1
         },
         cos: {
-            properties: object(PGA.defVals)
+            properties: object(PGA.defVals),
+            argNum: 1
         }
     }
     //tweek the specific properties to suit the function
@@ -203,12 +212,14 @@ PGA.initFunctions = function(){
     PGA.functions = jQuery.extend(true, {}, PGA.defFunctions);
     PGA.activeFunction = {
         name: null, //string containing the name
-        properties: null //reference to corresponding properties
+        properties: null, //reference to corresponding properties
+        argNum: null
     };
     PGA.activeFunction.update = function(newName) {
         PGA.activeFunction.name = newName;
         //searching in the functions object for needed properties and keepeng reference to them
         PGA.activeFunction.properties = PGA.functions[PGA.activeFunction.name].properties;
+        PGA.activeFunction.argNum = PGA.functions[PGA.activeFunction.name].argNum;
         //add limitation of possible encodings
         $("#encoding > *").attr("disabled","disabled");
         for(var enc in PGA.activeFunction.properties.allowedEncodings){

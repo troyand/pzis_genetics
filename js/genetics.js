@@ -3,7 +3,8 @@ PGA.A = {} //algorithm object
 PGA.A.encoding = function() {
     //length of the chromosome
     //TODO should be calculated dynamically
-    PGA.A.chLength = 8; 
+    PGA.A.chLength = PGA.activeFunction.properties.bitsPerNumber*PGA.activeFunction.argNum;
+    console.log(PGA.activeFunction.properties.bitsPerNumber,PGA.activeFunction.argNum);
     if(PGA.activeFunction.properties.encoding==='logarithmic'){
         PGA.A.toNum = log2num;
         PGA.A.toCh = num2log;
@@ -90,6 +91,9 @@ PGA.A.selection = function() {
         var pool =[];
         //code goes here
         return pool;
+    }
+    function getRandomChromosomes(quantity){
+        //for incomplete parent replacement
     }
     function roulette(quantity){
         var sum = 0;//sum of function values to normalize probabilities arrray
