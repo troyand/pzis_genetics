@@ -92,29 +92,35 @@ PGA.A.init = function() {
 
 PGA.A.selection = function() {
     roulette(PGA.A.chromosomes.length);
-    //console.log(elitarism(PGA.activeFunction.properties.elitarism/100));
-    function elitarism(percent){
+    console.log(elitarism(Math.floor( PGA.activeFunction.properties.populationSize*PGA.activeFunction.properties.elitarism/100 )));
+    function elitarism(quantity){
         var pool =[];
-        var quantity = Math.round(percent*PGA.activeFunction.properties.populationSize);
-        var chromHealth= [];
-        for (var i=0; i<PGA.A.chromosomes.length; i++)
-        {
-        	var z=PGA.A.chromosomes[i];
-        	var h=PGA.A.f([PGA.A.toNum(z)]);
-        	var temp=[h,z];
-        	chromHealth[i]=temp;
-        }
-        chromHealth.sort();
-        chromHealth.reverse();
-        console.log("vporadkovane: "+chromHealth);
-        for (var j=0; j<quantity; j++)
-        {
-        	pool[j]=chromHealth[j][1];
-        }
+        //var quantity = Math.round(percent*PGA.activeFunction.properties.populationSize);
+        //var chromHealth= [];
+        PGA.A.chromosomes.sort(function(a,b){return PGA.A.g(a) - PGA.A.g(b)});
+        PGA.A.chromosomes.reverse();
+        //for (var i=0; i<PGA.A.chromosomes.length; i++)
+        //{
+        //	var z = PGA.A.chromosomes[i];
+        //	var h = PGA.A.g(z);
+        //	var temp=[h,z];
+        //	chromHealth[i]=temp;
+        //}
+        //chromHealth.sort(function(a,b){return a - b});
+        //chromHealth.reverse();
+        //console.log("vporadkovane: "+chromHealth);
+        //for (var j=0; j<quantity; j++)
+        //{
+        //	pool[j]=chromHealth[j][1];
+        //}
+        pool = PGA.A.chromosomes.slice(0,quantity);
+        console.log(pool);
         return pool;
     }
     function getRandomChromosomes(quantity){
         //for incomplete parent replacement
+        PGA.A.chromosomes.shuffle();
+        return PGA.A.chromosomes.slice(0,quantity);
     }
     function roulette(quantity){
         var sum = 0;//sum of function values to normalize probabilities arrray
