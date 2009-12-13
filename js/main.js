@@ -189,7 +189,7 @@ PGA.initFunctions = function(){
         bitsPerNumber: 8,
         parentReplacementRate: 80,
         selectionType: "tournament",
-        elitarism: 0,
+        elitarism: 10,
         crossingOverProbability: 98,
         mutationProbability: 20,
         stopCriterion: 10

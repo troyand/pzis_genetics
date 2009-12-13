@@ -95,7 +95,22 @@ PGA.A.selection = function() {
     //console.log(elitarism(PGA.activeFunction.properties.elitarism/100));
     function elitarism(percent){
         var pool =[];
-        //code goes here
+        var quantity = Math.round(percent*PGA.activeFunction.properties.populationSize);
+        var chromHealth= [];
+        for (var i=0; i<PGA.A.chromosomes.length; i++)
+        {
+        	var z=PGA.A.chromosomes[i];
+        	var h=PGA.A.f([PGA.A.toNum(z)]);
+        	var temp=[h,z];
+        	chromHealth[i]=temp;
+        }
+        chromHealth.sort();
+        chromHealth.reverse();
+        console.log("vporadkovane: "+chromHealth);
+        for (var j=0; j<quantity; j++)
+        {
+        	pool[j]=chromHealth[j][1];
+        }
         return pool;
     }
     function getRandomChromosomes(quantity){
