@@ -84,40 +84,49 @@ PGA.A.init = function() {
 }
 
 PGA.A.selection = function() {
-    var sum = 0;//sum of function values to normalize probabilities arrray
-    var pSum = 0;
-    var prob = [];
-    for(var i=0; i < PGA.A.chromosomes.length; i++){
-        prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
-        sum += prob[i];
-        //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+    roulette(PGA.A.chromosomes.length);
+    console.log(elitarism(PGA.activeFunction.properties.elitarism/100));
+    function elitarism(percent){
+        var pool =[];
+        //code goes here
+        return pool;
     }
-    for(var i=0; i < PGA.A.chromosomes.length; i++){
-        prob[i] /= sum;
-        pSum += prob[i];
-        prob[i] = pSum;
-    }
-    var pool = [];
-    for(var i=0; i < PGA.A.chromosomes.length; i++){
-        var rand = Math.random();
-        var found = false;
-        for(var j=0; (j < PGA.A.chromosomes.length) && !found; j++){
-            if(rand < prob[j]){
-                pool[i] = PGA.A.chromosomes[j];
-                found = true;
+    function roulette(quantity){
+        var sum = 0;//sum of function values to normalize probabilities arrray
+        var pSum = 0;
+        var prob = [];
+        for(var i=0; i < PGA.A.chromosomes.length; i++){
+            prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+            sum += prob[i];
+            //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+        }
+        for(var i=0; i < PGA.A.chromosomes.length; i++){
+            prob[i] /= sum;
+            pSum += prob[i];
+            prob[i] = pSum;
+        }
+        var pool = [];
+        for(var i=0; i < PGA.A.chromosomes.length; i++){
+            var rand = Math.random();
+            var found = false;
+            for(var j=0; (j < PGA.A.chromosomes.length) && !found; j++){
+                if(rand < prob[j]){
+                    pool[i] = PGA.A.chromosomes[j];
+                    found = true;
+                }
             }
         }
+        //console.log(prob);
+        //console.log('sum before', sum);
+        PGA.A.chromosomes = pool;
+        sum = 0;
+        for(var i=0; i < PGA.A.chromosomes.length; i++){
+            prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+            sum += prob[i];
+            //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+        }
+        console.log('sum after', sum);
     }
-    //console.log(prob);
-    //console.log('sum before', sum);
-    PGA.A.chromosomes = pool;
-    sum = 0;
-    for(var i=0; i < PGA.A.chromosomes.length; i++){
-        prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
-        sum += prob[i];
-        //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
-    }
-    console.log('sum after', sum);
     function tournament(participantsNumber, quantity){
     	var pool = [];
     	for (var i=0; i<quantity; i++){ //form the needed quantity of chromosomes in the pool
@@ -139,7 +148,7 @@ PGA.A.selection = function() {
     	}
     	return pool;
     }
-    console.log(tournament(2,10));
+    //console.log(tournament(2,10));
    }
 
 PGA.A.recombination = function() {
