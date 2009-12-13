@@ -177,7 +177,7 @@ PGA.A.selection = function() {
     	var pool = [];
     	for (var i=0; i<quantity; i++){ //form the needed quantity of chromosomes in the pool
     		var winner=-1;
-    		var winnerHealth=-1;
+    		var winnerHealth=Math.log(0); //-Infinity
     		//console.log("next round");
     		//var sssss=Math.sin(157.5);
     		for (var j=0; j<participantsNumber; j++){ //form participants of the tournament and asses them
