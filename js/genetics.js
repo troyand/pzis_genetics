@@ -102,7 +102,14 @@ PGA.A.init = function() {
 PGA.A.selection = function() {
     var elitarists = Math.floor( PGA.activeFunction.properties.populationSize*PGA.activeFunction.properties.elitarism/100 );
     var grandparents = Math.floor( PGA.activeFunction.properties.populationSize*(1-PGA.activeFunction.properties.parentReplacementRate/100) );
-    PGA.A.chromosomes = tournament(5,PGA.A.chromosomes.length-elitarists-grandparents).concat( elitarism(elitarists) , getRandomChromosomes(grandparents));
+    var mainChildren = null;
+    if(PGA.activeFunction.properties.selectionType=="tournament"){
+        mainChildren = tournament(5,PGA.A.chromosomes.length-elitarists-grandparents);
+    }
+    if(PGA.activeFunction.properties.selectionType=="roulette"){
+        mainChildren = roulette(PGA.A.chromosomes.length-elitarists-grandparents);
+    }
+    PGA.A.chromosomes = mainChildren.concat( elitarism(elitarists) , getRandomChromosomes(grandparents));
     //console.log(PGA.A.g(PGA.A.chromosomes[0]));
     //console.log(elitarism(Math.floor( PGA.activeFunction.properties.populationSize*PGA.activeFunction.properties.elitarism/100 )));
     function elitarism(quantity){
