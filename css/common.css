@@ -1,3 +1,6 @@
+canvas {
+    float: left;
+}
 .clear {
     clear: both;
 }

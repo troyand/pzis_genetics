@@ -80,19 +80,31 @@ PGA.A.init = function() {
     //    return 1+Math.sin(arg[0]*0.05);
     //}
     PGA.A.f = PGA.funcs[PGA.activeFunction.name];
-    PGA.A.g = function(ch){
+    PGA.A.h = function(ch){
         var arg = [];
         for(var k=0; k<PGA.activeFunction.argNum; k++){
             arg[k] = PGA.A.toNum(ch.slice(k*PGA.activeFunction.properties.bitsPerNumber,(k+1)*PGA.activeFunction.properties.bitsPerNumber));
         }
-        return PGA.A.f(arg);
+        return arg;
     }
+    PGA.A.g = function(ch){
+        return PGA.A.f(PGA.A.h(ch));
+    }
+    var sum = 0;
+    for(var k=0; k<PGA.A.chromosomes.length; k++){
+        sum += PGA.A.g(PGA.A.chromosomes[k]);
+    }
+    PGA.A.baseF = sum/PGA.A.chromosomes.length;
+    console.log('base', PGA.A.baseF);
     //console.log(PGA.A.chromosomes,PGA.activeFunction.properties.populationSize);
 }
 
 PGA.A.selection = function() {
-    roulette(PGA.A.chromosomes.length);
-    console.log(elitarism(Math.floor( PGA.activeFunction.properties.populationSize*PGA.activeFunction.properties.elitarism/100 )));
+    var elitarists = Math.floor( PGA.activeFunction.properties.populationSize*PGA.activeFunction.properties.elitarism/100 );
+    var grandparents = Math.floor( PGA.activeFunction.properties.populationSize*(1-PGA.activeFunction.properties.parentReplacementRate/100) );
+    PGA.A.chromosomes = tournament(5,PGA.A.chromosomes.length-elitarists-grandparents).concat( elitarism(elitarists) , getRandomChromosomes(grandparents));
+    //console.log(PGA.A.g(PGA.A.chromosomes[0]));
+    //console.log(elitarism(Math.floor( PGA.activeFunction.properties.populationSize*PGA.activeFunction.properties.elitarism/100 )));
     function elitarism(quantity){
         var pool =[];
         //var quantity = Math.round(percent*PGA.activeFunction.properties.populationSize);
@@ -114,7 +126,7 @@ PGA.A.selection = function() {
         //	pool[j]=chromHealth[j][1];
         //}
         pool = PGA.A.chromosomes.slice(0,quantity);
-        console.log(pool);
+        //console.log(pool);
         return pool;
     }
     function getRandomChromosomes(quantity){
@@ -138,7 +150,7 @@ PGA.A.selection = function() {
             prob[i] = pSum;
         }
         var pool = [];
-        for(var i=0; i < PGA.A.chromosomes.length; i++){
+        for(var i=0; i < quantity; i++){
             var rand = Math.random();
             var found = false;
             for(var j=0; (j < PGA.A.chromosomes.length) && !found; j++){
@@ -148,17 +160,18 @@ PGA.A.selection = function() {
                 }
             }
         }
+        return pool;
         //console.log(prob);
         //console.log('sum before', sum);
-        PGA.A.chromosomes = pool;
-        sum = 0;
-        for(var i=0; i < PGA.A.chromosomes.length; i++){
-            //prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
-            prob[i] = PGA.A.g(PGA.A.chromosomes[i]);
-            sum += prob[i];
-            //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
-        }
-        console.log('sum after', sum);
+        //PGA.A.chromosomes = pool;
+        //sum = 0;
+        //for(var i=0; i < PGA.A.chromosomes.length; i++){
+        //    //prob[i] = PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]);
+        //    prob[i] = PGA.A.g(PGA.A.chromosomes[i]);
+        //    sum += prob[i];
+        //    //console.log(PGA.A.chromosomes[i], PGA.A.toNum(PGA.A.chromosomes[i]), PGA.A.f([ PGA.A.toNum(PGA.A.chromosomes[i]) ]) );
+        //}
+        //console.log('sum after', sum);
     }
     function tournament(participantsNumber, quantity){
     	var pool = [];
@@ -169,8 +182,8 @@ PGA.A.selection = function() {
     		//var sssss=Math.sin(157.5);
     		for (var j=0; j<participantsNumber; j++){ //form participants of the tournament and asses them
     			var randChrom=Math.floor(Math.random()*PGA.A.chromosomes.length);
-    			var z=PGA.A.toNum(PGA.A.chromosomes[randChrom]);
-    			var currHealth=PGA.A.f([z]);
+    			//var z=PGA.A.toNum(PGA.A.chromosomes[randChrom]);
+    			var currHealth=PGA.A.g(PGA.A.chromosomes[randChrom]);//PGA.A.f([z]);
     			if (currHealth>winnerHealth){
     				winner=randChrom;
     				winnerHealth=currHealth;
@@ -198,6 +211,7 @@ PGA.A.recombination = function() {
 		for (var i=0;i<n-1; i+=2)
 		{
 			if (Math.random()<prob){//crossover with probability prob
+                //console.log('ok');
 				child=crossover(pool[i], pool[i+1]);
 			}
 			else{//no crossover
@@ -241,19 +255,19 @@ PGA.A.recombination = function() {
 	}
 	function mutation (prob, children)
 	{
-		var alphabet=[0,1];
+		var alphabet=["0","1"];
 		for (var i=0; i<children.length; i++){
 			r=Math.random();
 			if (r<prob){
-				var point=Math.floor(Math.random()*(PGA.A.chLength-1));
+				var point=Math.floor(Math.random()*(PGA.A.chLength));
 				for (var j=0; j<alphabet.length; j++){
 					if (children[i].charAt(point)===alphabet[j]){
-						var k=(j+point)%(alphabet.length-1);
+						var k=(j+1)%alphabet.length;
 						children[i]=children[i].substring(0,point)+alphabet[k]+children[i].substring(point+1);
 						break;
 					}
 				}
-			}	
+			}
 		}
 		return children;
 	}

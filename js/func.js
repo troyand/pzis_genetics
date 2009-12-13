@@ -16,8 +16,8 @@ PGA.funcs.griewank = function(x){
 }
 
 PGA.funcs.rastrigin2 = function(x){
-    y=-100;
-    for(t=0;t<x.length;t++){
+    var y=-100;
+    for(var t=0;t<x.length;t++){
         y+=10*Math.cos(2*Math.PI*x[t])-x[t]*x[t];
     }
     return y;
@@ -28,10 +28,17 @@ PGA.funcs.rastrigin1 = function(x){
 }
 
 PGA.funcs.schwefel = function(x){
-    y = 0;
-    for(t=0; t<x.length; t++){
-        y += -x[t]*Math.sin(Math.sqrt(Math.abs(x[t])));
-    }
+    var y = 0;
+    y += -x[0]*Math.sin(Math.sqrt(Math.abs(x[0])));
+    y += -x[1]*Math.sin(Math.sqrt(Math.abs(x[1])));
+    y += -x[2]*Math.sin(Math.sqrt(Math.abs(x[2])));
+    y += -x[3]*Math.sin(Math.sqrt(Math.abs(x[3])));
+    y += -x[4]*Math.sin(Math.sqrt(Math.abs(x[4])));
+    y += -x[5]*Math.sin(Math.sqrt(Math.abs(x[5])));
+    y += -x[6]*Math.sin(Math.sqrt(Math.abs(x[6])));
+    y += -x[7]*Math.sin(Math.sqrt(Math.abs(x[7])));
+    y += -x[8]*Math.sin(Math.sqrt(Math.abs(x[8])));
+    y += -x[9]*Math.sin(Math.sqrt(Math.abs(x[9])));
     return y;
 }
 

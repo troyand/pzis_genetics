@@ -4,18 +4,20 @@ var PGA = {};
 
 
 PGA.time = 0;//time counter; each step gets incremented by 1
-PGA.updateInterval = 40;//25 fps
+PGA.updateInterval = 400;//25 fps
 PGA.renderIntervalID = null;
 
 $(document).ready(function(){
     PGA.initFunctions();
     PGA.renderFunctionOptions();
+    /*
     PGA.A.encoding();
     PGA.A.init();
     for(var k=0; k<25; k++){
         PGA.A.selection();
         PGA.A.recombination();
     }
+    */
     
 
     $("#tabs").tabs();
@@ -43,6 +45,8 @@ $(document).ready(function(){
     $(".ui-icon-play").click(function() {
             if(PGA.time == 0){
                 PGA.initCanvas();
+                PGA.A.encoding();
+                PGA.A.init();
             }
             else{
                 if(PGA.renderIntervalID == null){
@@ -113,10 +117,21 @@ PGA.canvasRenderLoop = function(){
     function myCos(t){
         return Math.cos(0.01*t);
     }
+    function averageImprovement(t){
+        var sum = 0;
+        for(var k=0; k<PGA.A.chromosomes.length; k++){
+            sum += PGA.A.g(PGA.A.chromosomes[k]);
+        }
+        return 0.5*Math.log( (sum/PGA.A.chromosomes.length)/PGA.A.baseF);
+    }
     function renderPlot(f,t,color){
         canvasContext.fillStyle = color;
         canvasContext.fillRect(0 + (t % width), 0.5*height*(1 - f(t)) - 1, 1, 2);
     }
+
+    PGA.A.selection();
+    PGA.A.recombination();
+
     canvasContext.fillStyle = "rgb(255,255,255)";
     //canvasContext.fillRect(0, 0, 640, 480);
     //canvasContext.translate(time, 0);
@@ -129,9 +144,15 @@ PGA.canvasRenderLoop = function(){
 
     //canvasContext.fillStyle = "rgba(0, 0, 200, 0.5)";
     //canvasContext.fillRect(0+(time % width), 0.5*height*(1-fRender(time))-1, 1, 2 );
-    renderPlot(sinExp, PGA.time, "rgba(0, 0, 200, 0.5)");
+    //renderPlot(sinExp, PGA.time, "rgba(0, 0, 200, 0.5)");
 
-    renderPlot(myCos, PGA.time, "rgba(0, 200, 0, 0.5)");
+    //renderPlot(myCos, PGA.time, "rgba(0, 200, 0, 0.5)");
+
+    renderPlot(averageImprovement, PGA.time, "rgba(200, 0, 50, 0.5)");
+    PGA.A.chromosomes.sort(function(a,b){return PGA.A.g(a) - PGA.A.g(b)});
+    PGA.A.chromosomes.reverse();
+    var html = PGA.A.chromosomes[0] + "<br>" + PGA.A.g(PGA.A.chromosomes[0]) + "<br>" + PGA.A.h(PGA.A.chromosomes[0]);
+    $("#currentResults").html(html);
     //alert(Math.abs(fRender(time)-fRender(time+2)));
     PGA.time += 1;
 }
@@ -207,6 +228,22 @@ PGA.initFunctions = function(){
         cos: {
             properties: object(PGA.defVals),
             argNum: 1
+        },
+        griewank: {
+            properties: object(PGA.defVals),
+            argNum: 2
+        },
+        rastrigin1: {
+            properties: object(PGA.defVals),
+            argNum: 2
+        },
+        rastrigin2: {
+            properties: object(PGA.defVals),
+            argNum: 10
+        },
+        schwefel: {
+            properties: object(PGA.defVals),
+            argNum: 10
         }
     }
     //tweek the specific properties to suit the function
