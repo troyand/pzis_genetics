@@ -128,6 +128,12 @@ PGA.canvasRenderLoop = function(){
         return 0.5*Math.log( PGA.A.g(PGA.A.chromosomes[0])/PGA.A.baseF);
     }
     function renderPlot(f,t,color){
+        if(f(t)==Math.log(0)){
+            return;
+        }
+        if(isNaN(f(t))){
+            return;
+        }
         canvasContext.fillStyle = color;
         canvasContext.fillRect(0 + (t % width), 0.5*height*(1 - f(t)) - 1, 1, 2);
     }
