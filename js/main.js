@@ -4,7 +4,7 @@ var PGA = {};
 
 
 PGA.time = 0;//time counter; each step gets incremented by 1
-PGA.updateInterval = 400;//25 fps
+PGA.updateInterval = 40;//25 fps
 PGA.renderIntervalID = null;
 
 $(document).ready(function(){
@@ -124,6 +124,9 @@ PGA.canvasRenderLoop = function(){
         }
         return 0.5*Math.log( (sum/PGA.A.chromosomes.length)/PGA.A.baseF);
     }
+    function bestImprovement(t){
+        return 0.5*Math.log( PGA.A.g(PGA.A.chromosomes[0])/PGA.A.baseF);
+    }
     function renderPlot(f,t,color){
         canvasContext.fillStyle = color;
         canvasContext.fillRect(0 + (t % width), 0.5*height*(1 - f(t)) - 1, 1, 2);
@@ -148,10 +151,11 @@ PGA.canvasRenderLoop = function(){
 
     //renderPlot(myCos, PGA.time, "rgba(0, 200, 0, 0.5)");
 
-    renderPlot(averageImprovement, PGA.time, "rgba(200, 0, 50, 0.5)");
     PGA.A.chromosomes.sort(function(a,b){return PGA.A.g(a) - PGA.A.g(b)});
     PGA.A.chromosomes.reverse();
     var html = PGA.A.chromosomes[0] + "<br>" + PGA.A.g(PGA.A.chromosomes[0]) + "<br>" + PGA.A.h(PGA.A.chromosomes[0]);
+    renderPlot(averageImprovement, PGA.time, "rgba(0, 200, 0, 0.5)");
+    renderPlot(bestImprovement, PGA.time, "rgba(0, 0, 200, 0.5)");
     $("#currentResults").html(html);
     //alert(Math.abs(fRender(time)-fRender(time+2)));
     PGA.time += 1;
