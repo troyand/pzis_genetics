@@ -284,6 +284,11 @@ PGA.initFunctions = function(){
     }
     //tweek the specific properties to suit the function
     PGA.defFunctions.sin.properties.crossingOverProbability = 80;
+    PGA.defFunctions.sin.properties.populationSize =15;
+    PGA.defFunctions.sin.properties.bitsPerNumber=16;
+    PGA.defFunctions.sin.properties.stopCriterion=20;
+    
+    
     PGA.defFunctions.cos.properties.mutationProbability = 10;
     PGA.defFunctions.cos.properties.allowedEncodings = ["logarithmic"];
     
