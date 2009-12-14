@@ -179,7 +179,8 @@ PGA.canvasRenderLoop = function(){
 
     PGA.A.chromosomes.sort(function(a,b){return PGA.A.g(a) - PGA.A.g(b)});
     PGA.A.chromosomes.reverse();
-    var html = "Best chromosome - " + PGA.A.chromosomes[0] + "<br>";
+    var html = "Generation number - " + (PGA.time+1) + "<br>";
+    html += "Best chromosome - " + PGA.A.chromosomes[0] + "<br>";
     html += "Function value - " + PGA.A.g(PGA.A.chromosomes[0]) + "<br>";
     html += "Argument value - " + PGA.A.h(PGA.A.chromosomes[0]);
     renderPlot(averageImprovement, PGA.time, "rgba(0, 200, 0, 0.5)");
