@@ -61,6 +61,14 @@ PGA.A.encoding = function() {
         }
         return alpha + beta + fixedBin(Math.round(log),PGA.A.chLength-2);
     }
+    //convert binary number string to gray-encoded string
+    function bin2gray(bin){
+        //return gray;
+    }
+    //convert gray-encoded string to binary number string
+    function gray2bin(gray){
+        //return bin;
+    }
 }
 
 PGA.A.init = function() {
