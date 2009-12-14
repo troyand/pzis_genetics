@@ -6,6 +6,25 @@ var PGA = {};
 PGA.time = 0;//time counter; each step gets incremented by 1
 PGA.updateInterval = 40;//25 fps
 PGA.renderIntervalID = null;
+PGA.stop = function(){
+    tb_show("Results","#TB_inline?height=500&width=700");
+    var html = "";
+    html += "<h3>"+PGA.activeFunction.name+"</h3>";
+    html += "<hr>";
+    html += "Function value - " + PGA.A.g(PGA.A.chromosomes[0]) + "<br>Argument value - (" + PGA.A.h(PGA.A.chromosomes[0])+")<br>";
+    html += "<hr>";
+    html += "Generations count - " + PGA.time + "<br>";
+    html += "Time taken - " + PGA.time*PGA.updateInterval/1000 + "<br>";
+    html += "<hr>";
+    html += "<b>Options</b><br>";
+    for(var v in PGA.activeFunction.properties){
+        html += v.camel2human() + " - " + PGA.activeFunction.properties[v] + "<br>";
+    }
+    $("#TB_ajaxContent").html(html);
+    PGA.time = 0;
+    clearInterval(PGA.renderIntervalID);
+    PGA.renderIntervalID = null;
+}
 
 $(document).ready(function(){
     PGA.initFunctions();
@@ -35,23 +54,7 @@ $(document).ready(function(){
         //PGA.initCanvas();
 
         $(".ui-icon-stop").click(function() {
-            tb_show("Results","#TB_inline?height=500&width=700");
-            var html = "";
-            html += "<h3>"+PGA.activeFunction.name+"</h3>";
-            html += "<hr>";
-            html += "Function value - " + PGA.A.g(PGA.A.chromosomes[0]) + "<br>Argument value - (" + PGA.A.h(PGA.A.chromosomes[0])+")<br>";
-            html += "<hr>";
-            html += "Generations count - " + PGA.time + "<br>";
-            html += "Time taken - " + PGA.time*PGA.updateInterval/1000 + "<br>";
-            html += "<hr>";
-            html += "<b>Options</b><br>";
-            for(var v in PGA.activeFunction.properties){
-                html += v.camel2human() + " - " + PGA.activeFunction.properties[v] + "<br>";
-            }
-            $("#TB_ajaxContent").html(html);
-            PGA.time = 0;
-            clearInterval(PGA.renderIntervalID);
-            PGA.renderIntervalID = null;
+                PGA.stop();
             });
 
         $(".ui-icon-pause").click(function() {
@@ -182,6 +185,9 @@ PGA.canvasRenderLoop = function(){
     $("#currentResults").html(html);
     //alert(Math.abs(fRender(time)-fRender(time+2)));
     PGA.time += 1;
+    if(PGA.time == PGA.activeFunction.properties.stopCriterion){
+        PGA.stop();
+    }
 }
 
 PGA.initFunctions = function(){
@@ -240,7 +246,7 @@ PGA.initFunctions = function(){
         elitarism: 10,
         crossingOverProbability: 98,
         mutationProbability: 20,
-        stopCriterion: 10
+        stopCriterion: 70
     };
 
     PGA.defFunctions = {
