@@ -291,7 +291,11 @@ PGA.initFunctions = function(){
     PGA.defFunctions.griewank.properties.parentReplacementRate = 90;
     PGA.defFunctions.griewank.properties.selectionType = "roulette";
     PGA.defFunctions.griewank.properties.elitarism = 15;
-    PGA.defFunctions.griewank.properties.stopCriterion = 15; 
+    PGA.defFunctions.griewank.properties.stopCriterion = 15;
+    PGA.defFunctions.rastrigin1.properties.encoding = "logarithmic";
+    PGA.defFunctions.rastrigin1.properties.populationSize = 25;
+    PGA.defFunctions.rastrigin1.properties.bitsPerNumber = 4;
+    PGA.defFunctions.rastrigin1.properties.stopCriterion = 15;
     
     PGA.functions = jQuery.extend(true, {}, PGA.defFunctions);
     PGA.activeFunction = {
