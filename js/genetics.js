@@ -14,6 +14,9 @@ PGA.A.encoding = function() {
     }
     console.log(num2log(log2num("0011")));
     console.log(fixedBin(31,PGA.A.chLength));
+   // console.log(bin2gray("0001"));
+    console.log(gray2bin(bin2gray("01110")));
+    console.log(bin2gray(gray2bin("01110")));
     //binary fixed-length string (chopped/zero-padded)
     function fixedBin(num,length){
         var bin = num.toString(2);
@@ -63,11 +66,25 @@ PGA.A.encoding = function() {
     }
     //convert binary number string to gray-encoded string
     function bin2gray(bin){
-        //return gray;
+        var gray=bin.charAt(0);
+        for (var i=1; i<bin.length; i++){
+        	var b1=bin.charAt(i);
+        	var b2=bin.charAt(i-1);
+        	var ch=(parseInt(b1,10)+parseInt(b2,10))%2;
+        	gray=gray+ch;
+        }
+    	return gray;
     }
     //convert gray-encoded string to binary number string
     function gray2bin(gray){
-        //return bin;
+        var bin=gray.charAt(0);
+        for (var i=1; i<gray.length; i++){
+        	var b1=bin.charAt(i-1);
+        	var g2=gray.charAt(i);
+        	var ch=(parseInt(b1,10)+parseInt(g2,10))%2;
+        	bin=bin+ch;
+        }
+    	return bin;
     }
 }
 
