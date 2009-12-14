@@ -286,6 +286,13 @@ PGA.initFunctions = function(){
     PGA.defFunctions.sin.properties.crossingOverProbability = 80;
     PGA.defFunctions.cos.properties.mutationProbability = 10;
     PGA.defFunctions.cos.properties.allowedEncodings = ["logarithmic"];
+    PGA.defFunctions.griewank.properties.gray = "enabled";
+    PGA.defFunctions.griewank.properties.populationSize = 70;
+    PGA.defFunctions.griewank.properties.parentReplacementRate = 90;
+    PGA.defFunctions.griewank.properties.selectionType = "roulette";
+    PGA.defFunctions.griewank.properties.elitarism = 15;
+    PGA.defFunctions.griewank.properties.stopCriterion = 15; 
+    
     PGA.functions = jQuery.extend(true, {}, PGA.defFunctions);
     PGA.activeFunction = {
         name: null, //string containing the name
