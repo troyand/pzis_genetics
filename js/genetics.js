@@ -33,14 +33,25 @@ PGA.A.encoding = function() {
     }
     //binary encoded chromosome to number
     function bin2num(ch){
+        if(PGA.activeFunction.properties.gray == 'enabled'){
+            ch = gray2bin(ch);
+        }
         return parseInt(ch,2);
     }
     //number to binary encoded chromosome
     function num2bin(num){
-        return fixedBin(num, PGA.A.chLength);
+        if(PGA.activeFunction.properties.gray == 'enabled'){
+            return bin2gray(fixedBin(num, PGA.A.chLength));
+        }
+        else{
+            return fixedBin(num, PGA.A.chLength);
+        }
     }
     //logarithm encoded chromosome to number
     function log2num(ch){
+        if(PGA.activeFunction.properties.gray == 'enabled'){
+            ch = gray2bin(ch);
+        }
         var alpha = parseInt(ch[0],2);
         var beta = parseInt(ch[1],2);
         var n = parseInt(ch.substring(2),2);
@@ -62,7 +73,12 @@ PGA.A.encoding = function() {
         else{
             beta = '1';
         }
-        return alpha + beta + fixedBin(Math.round(log),PGA.A.chLength-2);
+        if(PGA.activeFunction.properties.gray == 'enabled'){
+            return bin2gray(alpha + beta + fixedBin(Math.round(log),PGA.A.chLength-2));
+        }
+        else{
+            return alpha + beta + fixedBin(Math.round(log),PGA.A.chLength-2);
+        }
     }
     //convert binary number string to gray-encoded string
     function bin2gray(bin){

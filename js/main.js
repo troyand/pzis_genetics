@@ -234,7 +234,7 @@ PGA.initFunctions = function(){
         stopCriterion: {
             required: true,
             number: true,
-            range: [0, 100]
+            range: [0, 5000]
         },
     };
     PGA.defVals = {
