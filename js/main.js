@@ -286,8 +286,7 @@ PGA.initFunctions = function(){
     PGA.defFunctions.sin.properties.crossingOverProbability = 80;
     PGA.defFunctions.sin.properties.populationSize =15;
     PGA.defFunctions.sin.properties.bitsPerNumber=16;
-    PGA.defFunctions.sin.properties.stopCriterion=20;
-    
+    PGA.defFunctions.sin.properties.stopCriterion=20;    
     
     PGA.defFunctions.cos.properties.mutationProbability = 10;
     PGA.defFunctions.cos.properties.allowedEncodings = ["logarithmic"];
@@ -308,6 +307,15 @@ PGA.initFunctions = function(){
     PGA.defFunctions.rastrigin2.properties.elitarism = 23;
     PGA.defFunctions.rastrigin2.properties.stopCriterion = 140;
     
+    PGA.defFunctions.schwefel.properties.gray =  "enabled";
+    PGA.defFunctions.schwefel.properties.populationSize=40; 
+    PGA.defFunctions.schwefel.properties.bitsPerNumber =10; 
+    PGA.defFunctions.schwefel.properties.parentReplacementRate =90;
+    PGA.defFunctions.schwefel.properties.selectionType ="roulette";
+    PGA.defFunctions.schwefel.properties.elitarism =18;
+    PGA.defFunctions.schwefel.properties.crossingOverProbability =90;
+    PGA.defFunctions.schwefel.properties.mutationProbability =24;
+
     PGA.functions = jQuery.extend(true, {}, PGA.defFunctions);
     PGA.activeFunction = {
         name: null, //string containing the name
